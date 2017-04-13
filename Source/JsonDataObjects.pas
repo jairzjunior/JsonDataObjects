@@ -4776,6 +4776,7 @@ var
   V: Variant;
   D: Double;
   Ch: Char;
+  JsonObject: TJsonObject;
 begin
   Clear;
   if AObject = nil then
@@ -4809,6 +4810,13 @@ begin
           case PropList[Index].PropType^.Kind of
             tkInteger, tkChar, tkWChar:
               InternAdd(PropName, GetOrdProp(AObject, PropList[Index]));
+
+            tkClass:
+              begin
+                JsonObject := TJsonObject.Create;
+                JsonObject.FromSimpleObject(GetObjectProp(AObject, PropName), ALowerCamelCase);
+                InternAdd(PropName, JsonObject);
+              end;
 
             tkEnumeration:
               begin
